@@ -50,5 +50,8 @@
     "rsbuild",
     "micro-frontends",
     "static-analysis"
-  ]
+  ],
+  "publishConfig": {
+    "access": "public"
+  }
 }
