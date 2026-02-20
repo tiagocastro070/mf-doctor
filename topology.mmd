@@ -1,0 +1,13 @@
+flowchart TD
+    subgraph hosts [Hosts / Shells]
+        _rsbuild_basic_shell["@rsbuild-basic/shell<br/>rsbuild<br/>consumes: remoteA, remoteB"]
+        _rsbuild_basic_remote_c["@rsbuild-basic/remote-c<br/>rsbuild<br/>consumes: shell"]
+        _rsbuild_basic_remote_b["@rsbuild-basic/remote-b<br/>rsbuild<br/>consumes: remoteC"]
+    end
+    subgraph remotes [Remotes]
+        _rsbuild_basic_remote_a["@rsbuild-basic/remote-a<br/>rsbuild<br/>exposes: ./Button"]
+    end
+    _rsbuild_basic_shell -->|"remoteA"| _rsbuild_basic_remote_a
+    _rsbuild_basic_shell -->|"remoteB"| _rsbuild_basic_remote_b
+    _rsbuild_basic_remote_c -->|"shell"| _rsbuild_basic_shell
+    _rsbuild_basic_remote_b -->|"remoteC"| _rsbuild_basic_remote_c
