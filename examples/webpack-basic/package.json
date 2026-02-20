@@ -1,0 +1,7 @@
+{
+  "name": "@examples/webpack-basic",
+  "private": true,
+  "workspaces": [
+    "apps/*"
+  ]
+}
