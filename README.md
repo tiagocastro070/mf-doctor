@@ -1,4 +1,4 @@
-# mfdoc
+# MFDOC
 
 Static analyzer for Module Federation setups. Discovers federation participants, extracts config, and runs checks to catch version drift, shared-config mismatches, and other issues before they hit production.
 
