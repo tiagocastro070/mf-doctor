@@ -9,30 +9,6 @@ import { getHostParticipants } from "../projectGraph.js";
 
 const ANALYZER_ID = "shared-dependency-candidate";
 
-const DEV_ONLY_DEPENDENCIES = new Set([
-  "typescript",
-  "eslint",
-  "prettier",
-  "vitest",
-  "jest",
-  "@types/node",
-  "@types/react",
-  "@types/react-dom",
-  "ts-node",
-  "tsx",
-  "@vitejs/plugin-react",
-  "@rspack/cli",
-  "@rsbuild/core",
-  "webpack",
-  "webpack-cli",
-  "vite",
-  "rollup",
-  "esbuild",
-  "husky",
-  "lint-staged",
-  "commitlint",
-]);
-
 type DependencyInfo = {
   name: string;
   remoteCount: number;
@@ -70,16 +46,14 @@ function getDownstreamRemotes(
 }
 
 /**
- * Checks if a participant has a dependency in their package.json.
+ * Checks if a participant has a runtime dependency in their package.json.
+ * Only considers dependencies, not devDependencies (dev deps are not loaded into the browser).
  */
 function hasDependency(
   participant: FederationParticipant,
   depName: string,
 ): boolean {
-  return (
-    depName in participant.dependencies ||
-    depName in participant.devDependencies
-  );
+  return depName in participant.dependencies;
 }
 
 /**
@@ -93,30 +67,8 @@ function isShared(
 }
 
 /**
- * Checks if a dependency should be excluded from analysis.
- */
-function shouldExclude(depName: string): boolean {
-  if (DEV_ONLY_DEPENDENCIES.has(depName)) {
-    return true;
-  }
-
-  if (depName.startsWith("@types/")) {
-    return true;
-  }
-
-  if (
-    depName.includes("eslint") ||
-    depName.includes("prettier") ||
-    depName.includes("stylelint")
-  ) {
-    return true;
-  }
-
-  return false;
-}
-
-/**
- * Collects all unique dependencies from a set of remotes.
+ * Collects all unique runtime dependencies from a set of remotes.
+ * Only considers dependencies, not devDependencies.
  */
 function collectRemoteDependencies(
   remotes: FederationParticipant[],
@@ -124,16 +76,7 @@ function collectRemoteDependencies(
   const depToRemotes = new Map<string, string[]>();
 
   for (const remote of remotes) {
-    const allDeps = [
-      ...Object.keys(remote.dependencies),
-      ...Object.keys(remote.devDependencies),
-    ];
-
-    for (const dep of allDeps) {
-      if (shouldExclude(dep)) {
-        continue;
-      }
-
+    for (const dep of Object.keys(remote.dependencies)) {
       if (!depToRemotes.has(dep)) {
         depToRemotes.set(dep, []);
       }

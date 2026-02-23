@@ -15,19 +15,15 @@ type VersionInfo = {
 
 /**
  * Extracts the effective version of a package from a participant (resolved from lockfile when available, else declared).
+ * Only considers runtime dependencies, not devDependencies.
  */
 function getPackageVersion(
   participant: FederationParticipant,
   packageName: string,
 ): string | null {
-  const resolved =
-    participant.resolvedDependencies?.[packageName] ??
-    participant.resolvedDevDependencies?.[packageName];
+  const resolved = participant.resolvedDependencies?.[packageName];
   if (resolved) return resolved;
-  const declared =
-    participant.dependencies[packageName] ??
-    participant.devDependencies[packageName] ??
-    null;
+  const declared = participant.dependencies[packageName] ?? null;
   return declared ? normalizeVersion(declared) : null;
 }
 

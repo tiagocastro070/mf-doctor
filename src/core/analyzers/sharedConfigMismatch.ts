@@ -86,6 +86,9 @@ function collectSharedConfigs(
 
 /**
  * Gets all unique shared package names across all participants.
+ * Only includes packages that are runtime dependencies (in dependencies, not
+ * exclusively devDependencies) of at least one participant. Dev-only packages
+ * are not loaded into the browser, so we skip mismatch analysis for them.
  */
 function getAllSharedPackages(graph: ProjectGraph): Set<string> {
   const packages = new Set<string>();
@@ -94,7 +97,9 @@ function getAllSharedPackages(graph: ProjectGraph): Set<string> {
     for (const packageName of Object.keys(
       participant.federationConfig.shared,
     )) {
-      packages.add(packageName);
+      if (packageName in participant.dependencies) {
+        packages.add(packageName);
+      }
     }
   }
 

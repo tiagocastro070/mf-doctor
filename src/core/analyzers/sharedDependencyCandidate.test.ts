@@ -259,6 +259,46 @@ describe("sharedDependencyCandidateAnalyzer", () => {
 
       expect(eslintFindings).toHaveLength(0);
     });
+
+    it("does not flag packages only in devDependencies", () => {
+      const host = createMockParticipant("shell", {
+        dependencies: { react: "^18.0.0" },
+        remotes: {
+          remoteA: "remoteA@http://localhost:3001/mf-manifest.json",
+          remoteB: "remoteB@http://localhost:3002/mf-manifest.json",
+        },
+      });
+
+      const remoteA = createMockParticipant("remote-a", {
+        dependencies: { react: "^18.0.0" },
+        devDependencies: { lodash: "^4.17.21" },
+        exposes: { "./Button": "./src/Button.tsx" },
+      });
+      remoteA.federationConfig.name = "remoteA";
+
+      const remoteB = createMockParticipant("remote-b", {
+        dependencies: { react: "^18.0.0" },
+        devDependencies: { lodash: "^4.17.21" },
+        exposes: { "./Card": "./src/Card.tsx" },
+      });
+      remoteB.federationConfig.name = "remoteB";
+
+      const graph = createMockGraph(
+        [host, remoteA, remoteB],
+        [
+          { from: "shell", to: "remote-a", remoteKey: "remoteA" },
+          { from: "shell", to: "remote-b", remoteKey: "remoteB" },
+        ],
+      );
+
+      const result = sharedDependencyCandidateAnalyzer.analyze(graph);
+
+      const lodashFinding = result.findings.find(
+        (f) => (f.details as Record<string, unknown>).dependency === "lodash",
+      );
+
+      expect(lodashFinding).toBeUndefined();
+    });
   });
 
   describe("threshold configuration", () => {

@@ -167,12 +167,18 @@ describe("missingSharedAnalyzer", () => {
     });
 
     it("excludes dev-only dependencies like typescript", () => {
-      const participantA = createMockParticipant("app-a", {
-        typescript: "^5.0.0",
-      });
-      const participantB = createMockParticipant("app-b", {
-        typescript: "^5.0.0",
-      });
+      const participantA = createMockParticipant(
+        "app-a",
+        {},
+        {},
+        { typescript: "^5.0.0" },
+      );
+      const participantB = createMockParticipant(
+        "app-b",
+        {},
+        {},
+        { typescript: "^5.0.0" },
+      );
 
       const graph = createMockGraph([participantA, participantB]);
 
@@ -181,13 +187,19 @@ describe("missingSharedAnalyzer", () => {
       expect(result.findings).toHaveLength(0);
     });
 
-    it("excludes @types packages", () => {
-      const participantA = createMockParticipant("app-a", {
-        "@types/lodash": "^4.14.0",
-      });
-      const participantB = createMockParticipant("app-b", {
-        "@types/lodash": "^4.14.0",
-      });
+    it("excludes @types packages in devDependencies", () => {
+      const participantA = createMockParticipant(
+        "app-a",
+        {},
+        {},
+        { "@types/lodash": "^4.14.0" },
+      );
+      const participantB = createMockParticipant(
+        "app-b",
+        {},
+        {},
+        { "@types/lodash": "^4.14.0" },
+      );
 
       const graph = createMockGraph([participantA, participantB]);
 
@@ -196,13 +208,19 @@ describe("missingSharedAnalyzer", () => {
       expect(result.findings).toHaveLength(0);
     });
 
-    it("excludes eslint-related packages", () => {
-      const participantA = createMockParticipant("app-a", {
-        "eslint-config-custom": "^1.0.0",
-      });
-      const participantB = createMockParticipant("app-b", {
-        "eslint-config-custom": "^1.0.0",
-      });
+    it("excludes devDependencies from analysis", () => {
+      const participantA = createMockParticipant(
+        "app-a",
+        {},
+        {},
+        { "eslint-config-custom": "^1.0.0" },
+      );
+      const participantB = createMockParticipant(
+        "app-b",
+        {},
+        {},
+        { "eslint-config-custom": "^1.0.0" },
+      );
 
       const graph = createMockGraph([participantA, participantB]);
 
@@ -211,7 +229,7 @@ describe("missingSharedAnalyzer", () => {
       expect(result.findings).toHaveLength(0);
     });
 
-    it("handles devDependencies the same as dependencies", () => {
+    it("does not flag devDependencies as missing shared", () => {
       const participantA = createMockParticipant(
         "app-a",
         {},
@@ -229,8 +247,7 @@ describe("missingSharedAnalyzer", () => {
 
       const result = missingSharedAnalyzer.analyze(graph);
 
-      expect(result.findings).toHaveLength(1);
-      expect(result.findings[0].message).toContain("lodash");
+      expect(result.findings).toHaveLength(0);
     });
   });
 

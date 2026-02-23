@@ -13,7 +13,14 @@ const EXAMPLE_WORKSPACE = join(process.cwd(), "examples/rsbuild-basic");
 function createMockParticipant(
   name: string,
   shared: Record<string, SharedConfig | string>,
+  dependencies: Record<string, string> = {},
 ): FederationParticipant {
+  const deps =
+    Object.keys(dependencies).length > 0
+      ? dependencies
+      : Object.fromEntries(
+          Object.keys(shared).map((pkg) => [pkg, "*"]),
+        );
   return {
     name,
     projectRoot: `/mock/${name}`,
@@ -27,7 +34,7 @@ function createMockParticipant(
       remotes: {},
       shared,
     },
-    dependencies: {},
+    dependencies: deps,
     devDependencies: {},
     parseStatus: "complete",
   };

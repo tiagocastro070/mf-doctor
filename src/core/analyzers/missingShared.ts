@@ -9,35 +9,6 @@ import type {
 const ANALYZER_ID = "missing-shared";
 
 /**
- * Dependencies that are typically dev-only and shouldn't be shared at runtime.
- */
-const DEV_ONLY_DEPENDENCIES = new Set([
-  "typescript",
-  "eslint",
-  "prettier",
-  "vitest",
-  "jest",
-  "@types/node",
-  "@types/react",
-  "@types/react-dom",
-  "ts-node",
-  "tsx",
-  "@vitejs/plugin-react",
-  "@rspack/cli",
-  "@rsbuild/core",
-  "@rsbuild/plugin-react",
-  "@module-federation/rsbuild-plugin",
-  "webpack",
-  "webpack-cli",
-  "vite",
-  "rollup",
-  "esbuild",
-  "husky",
-  "lint-staged",
-  "commitlint",
-]);
-
-/**
  * Information about a dependency used across participants.
  */
 type DependencyUsage = {
@@ -49,40 +20,14 @@ type DependencyUsage = {
 };
 
 /**
- * Checks if a dependency should be excluded from analysis.
- */
-function shouldExclude(depName: string): boolean {
-  if (DEV_ONLY_DEPENDENCIES.has(depName)) {
-    return true;
-  }
-
-  if (depName.startsWith("@types/")) {
-    return true;
-  }
-
-  if (
-    depName.includes("eslint") ||
-    depName.includes("prettier") ||
-    depName.includes("stylelint")
-  ) {
-    return true;
-  }
-
-  return false;
-}
-
-/**
  * Gets the version of a dependency from a participant.
+ * Only considers runtime dependencies (not devDependencies).
  */
 function getDependencyVersion(
   participant: FederationParticipant,
   depName: string,
 ): string | null {
-  return (
-    participant.dependencies[depName] ??
-    participant.devDependencies[depName] ??
-    null
-  );
+  return participant.dependencies[depName] ?? null;
 }
 
 /**
@@ -104,16 +49,7 @@ function collectDependencyUsage(
   const usageMap = new Map<string, DependencyUsage>();
 
   for (const participant of graph.participants) {
-    const allDeps = new Set([
-      ...Object.keys(participant.dependencies),
-      ...Object.keys(participant.devDependencies),
-    ]);
-
-    for (const depName of allDeps) {
-      if (shouldExclude(depName)) {
-        continue;
-      }
-
+    for (const depName of Object.keys(participant.dependencies)) {
       if (!usageMap.has(depName)) {
         usageMap.set(depName, {
           name: depName,
