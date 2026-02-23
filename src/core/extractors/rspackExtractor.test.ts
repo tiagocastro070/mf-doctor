@@ -11,7 +11,7 @@ import {
   extractFromProject,
 } from "./rspackExtractor.js";
 
-const TEST_DIR = join(tmpdir(), "mfdoc-rspack-test-" + Date.now());
+const TEST_DIR = join(tmpdir(), "mf-doctor-rspack-test-" + Date.now());
 
 function createTestProject(files: string[]): string {
   const projectRoot = join(

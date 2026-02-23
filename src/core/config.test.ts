@@ -15,7 +15,7 @@ describe("config", () => {
   beforeEach(() => {
     testDir = join(
       tmpdir(),
-      `mfdoc-config-test-${Date.now()}-${Math.random().toString(36).slice(2)}`,
+      `mf-doctor-config-test-${Date.now()}-${Math.random().toString(36).slice(2)}`,
     );
     mkdirSync(testDir, { recursive: true });
   });
@@ -37,8 +37,8 @@ describe("config", () => {
       });
     });
 
-    it("loads mfdoc.config.js", async () => {
-      const configPath = join(testDir, "mfdoc.config.js");
+    it("loads mf-doctor.config.js", async () => {
+      const configPath = join(testDir, "mf-doctor.config.js");
       writeFileSync(
         configPath,
         `export default {
@@ -56,8 +56,8 @@ describe("config", () => {
       expect(config.configPath).toBe(configPath);
     });
 
-    it("loads mfdoc.config.mjs", async () => {
-      const configPath = join(testDir, "mfdoc.config.mjs");
+    it("loads mf-doctor.config.mjs", async () => {
+      const configPath = join(testDir, "mf-doctor.config.mjs");
       writeFileSync(
         configPath,
         `export default {
@@ -72,8 +72,8 @@ describe("config", () => {
     });
 
     it("prefers .ts over .js", async () => {
-      const tsPath = join(testDir, "mfdoc.config.ts");
-      const jsPath = join(testDir, "mfdoc.config.js");
+      const tsPath = join(testDir, "mf-doctor.config.ts");
+      const jsPath = join(testDir, "mf-doctor.config.js");
 
       writeFileSync(tsPath, `export default { severityThreshold: "LOW" };`);
       writeFileSync(jsPath, `export default { severityThreshold: "HIGH" };`);
@@ -85,7 +85,7 @@ describe("config", () => {
     });
 
     it("loads ignore patterns", async () => {
-      const configPath = join(testDir, "mfdoc.config.js");
+      const configPath = join(testDir, "mf-doctor.config.js");
       writeFileSync(
         configPath,
         `export default {
@@ -99,7 +99,7 @@ describe("config", () => {
     });
 
     it("throws on invalid severityThreshold", async () => {
-      const configPath = join(testDir, "mfdoc.config.js");
+      const configPath = join(testDir, "mf-doctor.config.js");
       writeFileSync(
         configPath,
         `export default { severityThreshold: "INVALID" };`,
@@ -111,21 +111,21 @@ describe("config", () => {
     });
 
     it("throws on invalid checks type", async () => {
-      const configPath = join(testDir, "mfdoc.config.js");
+      const configPath = join(testDir, "mf-doctor.config.js");
       writeFileSync(configPath, `export default { checks: "not-an-object" };`);
 
       await expect(loadConfig(testDir)).rejects.toThrow("Invalid 'checks'");
     });
 
     it("throws on invalid ignore type", async () => {
-      const configPath = join(testDir, "mfdoc.config.js");
+      const configPath = join(testDir, "mf-doctor.config.js");
       writeFileSync(configPath, `export default { ignore: "not-an-array" };`);
 
       await expect(loadConfig(testDir)).rejects.toThrow("Invalid 'ignore'");
     });
 
     it("loads hosts configuration", async () => {
-      const configPath = join(testDir, "mfdoc.config.js");
+      const configPath = join(testDir, "mf-doctor.config.js");
       writeFileSync(
         configPath,
         `export default {
@@ -139,7 +139,7 @@ describe("config", () => {
     });
 
     it("defaults hosts to empty array when not specified", async () => {
-      const configPath = join(testDir, "mfdoc.config.js");
+      const configPath = join(testDir, "mf-doctor.config.js");
       writeFileSync(configPath, `export default { severityThreshold: "LOW" };`);
 
       const config = await loadConfig(testDir);
@@ -148,14 +148,14 @@ describe("config", () => {
     });
 
     it("throws on invalid hosts type", async () => {
-      const configPath = join(testDir, "mfdoc.config.js");
+      const configPath = join(testDir, "mf-doctor.config.js");
       writeFileSync(configPath, `export default { hosts: "not-an-array" };`);
 
       await expect(loadConfig(testDir)).rejects.toThrow("Invalid 'hosts'");
     });
 
     it("throws on non-string items in hosts array", async () => {
-      const configPath = join(testDir, "mfdoc.config.js");
+      const configPath = join(testDir, "mf-doctor.config.js");
       writeFileSync(configPath, `export default { hosts: ["valid", 123] };`);
 
       await expect(loadConfig(testDir)).rejects.toThrow(

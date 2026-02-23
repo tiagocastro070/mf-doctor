@@ -4,7 +4,7 @@ import { join } from "node:path";
 import { tmpdir } from "node:os";
 import { getResolvedVersions } from "./index.js";
 
-const TEST_DIR = join(tmpdir(), "mfdoc-lockfile-test-" + Date.now());
+const TEST_DIR = join(tmpdir(), "mf-doctor-lockfile-test-" + Date.now());
 
 describe("getResolvedVersions", () => {
   afterEach(() => {

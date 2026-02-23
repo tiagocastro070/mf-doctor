@@ -1,9 +1,9 @@
 {
-  "name": "mfdoc",
+  "name": "mf-doctor",
   "version": "0.1.0",
   "type": "module",
   "bin": {
-    "mfdoc": "./dist/cli/index.js"
+    "mf-doctor": "./dist/cli/index.js"
   },
   "files": ["dist", "README.md", "LICENSE"],
   "scripts": {
@@ -38,10 +38,10 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/tiagocastro070/mfdoc.git"
+    "url": "https://github.com/tiagocastro070/mf-doctor.git"
   },
   "bugs": {
-    "url": "https://github.com/tiagocastro070/mfdoc/issues"
+    "url": "https://github.com/tiagocastro070/mf-doctor/issues"
   },
   "keywords": [
     "module-federation",

@@ -807,7 +807,7 @@ export function formatPretty(result: ExtendedResult): string {
   lines.push(pc.bold(pc.cyan("┌" + "─".repeat(48) + "┐")));
   lines.push(
     pc.bold(pc.cyan("│")) +
-      pc.bold("        mfdoc · Module Federation Analyzer      ") +
+      pc.bold("        mf-doctor · Module Federation Analyzer      ") +
       pc.bold(pc.cyan("│")),
   );
   lines.push(pc.bold(pc.cyan("└" + "─".repeat(48) + "┘")));

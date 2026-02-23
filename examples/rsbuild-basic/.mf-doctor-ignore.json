@@ -1,0 +1,1 @@
+{"ignoreFindings":[{"id":"shared-config-mismatch","participants":["@rsbuild-basic/remote-a"],"reason":"Temporary drift during migration - tracked in JIRA-1234"}]}

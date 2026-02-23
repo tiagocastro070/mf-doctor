@@ -8,7 +8,7 @@ import {
   discoverFromWorkspaceFile,
 } from "./discovery.js";
 
-const TEST_DIR = join(tmpdir(), "mfdoc-test-" + Date.now());
+const TEST_DIR = join(tmpdir(), "mf-doctor-test-" + Date.now());
 
 function createTestWorkspace(structure: {
   root: Record<string, unknown>;

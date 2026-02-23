@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * Generates mfdoc-topology.svg from the rsbuild-basic example.
+ * Generates mf-doctor-topology.svg from the rsbuild-basic example.
  * Run: node scripts/graph-to-image.mjs
  * Requires: npm run build, and @mermaid-js/mermaid-cli (npx)
  */
@@ -12,9 +12,9 @@ import { fileURLToPath } from "node:url";
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const root = join(__dirname, "..");
 const topologyPath = join(root, "topology.mmd");
-const outputPath = join(root, "../mfdoc-documentation/static/img/mfdoc-topology.svg");
+const outputPath = join(root, "../mfdoc-documentation/static/img/mf-doctor-topology.svg");
 
-// Generate mermaid via mfdoc
+// Generate mermaid via mf-doctor
 execSync(`node dist/cli/index.js graph examples/rsbuild-basic -f mermaid -o topology.mmd`, {
   cwd: root,
   stdio: "inherit",

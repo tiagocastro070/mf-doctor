@@ -11,9 +11,9 @@ export type CheckConfig = {
 };
 
 /**
- * mfdoc configuration file format.
+ * mf-doctor configuration file format.
  */
-export type MfdocConfig = {
+export type MfDoctorConfig = {
   /** Configuration for individual checks/analyzers */
   checks?: Record<string, CheckConfig>;
   /** Severity threshold for exit code (default: HIGH) */
@@ -51,11 +51,11 @@ const DEFAULT_CONFIG: ResolvedConfig = {
  * Supported config file names in order of preference.
  */
 const CONFIG_FILE_NAMES = [
-  "mfdoc.config.ts",
-  "mfdoc.config.mts",
-  "mfdoc.config.js",
-  "mfdoc.config.mjs",
-  "mfdoc.config.cjs",
+  "mf-doctor.config.ts",
+  "mf-doctor.config.mts",
+  "mf-doctor.config.js",
+  "mf-doctor.config.mjs",
+  "mf-doctor.config.cjs",
 ] as const;
 
 /**
@@ -74,7 +74,7 @@ function findConfigFile(directory: string): string | null {
 /**
  * Dynamically imports a config file.
  */
-async function importConfigFile(configPath: string): Promise<MfdocConfig> {
+async function importConfigFile(configPath: string): Promise<MfDoctorConfig> {
   try {
     const fileUrl = pathToFileURL(configPath).href;
     const module = await import(fileUrl);
@@ -89,7 +89,7 @@ async function importConfigFile(configPath: string): Promise<MfdocConfig> {
 /**
  * Validates the configuration object.
  */
-function validateConfig(config: unknown, configPath: string): MfdocConfig {
+function validateConfig(config: unknown, configPath: string): MfDoctorConfig {
   if (typeof config !== "object" || config === null) {
     throw new Error(`Invalid config in ${configPath}: expected an object`);
   }
@@ -126,14 +126,14 @@ function validateConfig(config: unknown, configPath: string): MfdocConfig {
     }
   }
 
-  return config as MfdocConfig;
+  return config as MfDoctorConfig;
 }
 
 /**
  * Merges user config with defaults.
  */
 function mergeWithDefaults(
-  userConfig: MfdocConfig,
+  userConfig: MfDoctorConfig,
   configPath: string | null,
 ): ResolvedConfig {
   return {
@@ -147,14 +147,14 @@ function mergeWithDefaults(
 }
 
 /**
- * Loads the mfdoc configuration from a workspace.
+ * Loads the mf-doctor configuration from a workspace.
  *
  * Searches for config files in this order:
- * 1. mfdoc.config.ts
- * 2. mfdoc.config.mts
- * 3. mfdoc.config.js
- * 4. mfdoc.config.mjs
- * 5. mfdoc.config.cjs
+ * 1. mf-doctor.config.ts
+ * 2. mf-doctor.config.mts
+ * 3. mf-doctor.config.js
+ * 4. mf-doctor.config.mjs
+ * 5. mf-doctor.config.cjs
  *
  * @param workspaceRoot - Path to the workspace root
  * @returns Resolved configuration with defaults applied

@@ -1,4 +1,4 @@
-# MFDOC
+# MF-DOCTOR
 
 Static analyzer for Module Federation setups. Discovers federation participants, extracts config, and runs checks to catch version drift, shared-config mismatches, and other issues before they hit production.
 
@@ -7,10 +7,10 @@ Static analyzer for Module Federation setups. Discovers federation participants,
 ## Quick start
 
 ```bash
-npx mfdoc analyze .
+npx mf-doctor analyze .
 ```
 
-Analyze another path: `npx mfdoc analyze path/to/workspace`
+Analyze another path: `npx mf-doctor analyze path/to/workspace`
 
 **Requirements:** Node.js 18+
 
@@ -20,8 +20,8 @@ Analyze another path: `npx mfdoc analyze path/to/workspace`
 
 | Method                           | Command                                                                                   |
 | -------------------------------- | ----------------------------------------------------------------------------------------- |
-| Project dependency (recommended) | `npm install -D mfdoc`                                                                    |
-| One-off run                      | `npx mfdoc analyze .`                                                                     |
+| Project dependency (recommended) | `npm install -D mf-doctor`                                                                    |
+| One-off run                      | `npx mf-doctor analyze .`                                                                     |
 | From source                      | `npm install` → `npm run build` → `node dist/cli/index.js analyze examples/rsbuild-basic` |
 
 ---
@@ -68,20 +68,20 @@ Analyze another path: `npx mfdoc analyze path/to/workspace`
 | `-w, --workspace <file>`        | Path to `.code-workspace` for polyrepo discovery                   |
 | `--fail-on <LOW\|MEDIUM\|HIGH>` | Exit non-zero when findings meet/exceed severity (default: `HIGH`) |
 | `--host <name>`                 | Mark participant as host (runtime-loaded remotes). Repeatable.     |
-| `--no-config`                   | Ignore `mfdoc.config.*`                                            |
-| `--no-ignore`                   | Ignore `.mfdoc-ignore.json`                                        |
+| `--no-config`                   | Ignore `mf-doctor.config.*`                                            |
+| `--no-ignore`                   | Ignore `.mf-doctor-ignore.json`                                        |
 
 ### Analyzer IDs
 
 `react-version-drift`, `shared-config-mismatch`, `shared-dependency-candidate`, `missing-shared`, `duplicate-expose-name`, `orphan-expose`, `circular-dependency`
 
-Example: `mfdoc analyze . -a react-version-drift,shared-config-mismatch`
+Example: `mf-doctor analyze . -a react-version-drift,shared-config-mismatch`
 
 ---
 
 ## Configuration
 
-Optional: `mfdoc.config.ts` (or `.mts` / `.js` / `.mjs` / `.cjs`) in the workspace root.
+Optional: `mf-doctor.config.ts` (or `.mts` / `.js` / `.mjs` / `.cjs`) in the workspace root.
 
 ```ts
 export default {
@@ -99,7 +99,7 @@ export default {
 
 ## Ignoring findings
 
-`.mfdoc-ignore.json` in the workspace root:
+`.mf-doctor-ignore.json` in the workspace root:
 
 ```json
 {
@@ -120,7 +120,7 @@ export default {
 For setups where shell and remotes live in separate repos, use a VS Code / Cursor `.code-workspace` file:
 
 ```bash
-mfdoc analyze --workspace ./my-federation.code-workspace
+mf-doctor analyze --workspace ./my-federation.code-workspace
 ```
 
 Example workspace:
@@ -143,7 +143,7 @@ Each folder is scanned for bundler configs; nested `workspaces` in a folder’s 
 
 When remotes are loaded at runtime (e.g. from env or a manifest), the build-time `remotes` may be empty. Mark hosts explicitly:
 
-**CLI:** `mfdoc analyze . --host shell-ui --host admin-shell`  
+**CLI:** `mf-doctor analyze . --host shell-ui --host admin-shell`  
 **Config:** `hosts: ["shell-ui", "admin-shell"]`
 
 CLI and config hosts are merged.
@@ -156,7 +156,7 @@ CLI and config hosts are merged.
 
 ## CI
 
-- JSON: `mfdoc analyze --format json --fail-on MEDIUM | jq`
+- JSON: `mf-doctor analyze --format json --fail-on MEDIUM | jq`
 - Exit code `0` when no findings at or above the threshold (after ignores); otherwise `1`.
 
 ---

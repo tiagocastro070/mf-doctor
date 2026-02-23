@@ -10,7 +10,7 @@ describe("workspaceFile", () => {
   beforeEach(() => {
     testDir = join(
       tmpdir(),
-      `mfdoc-workspace-file-test-${Date.now()}-${Math.random().toString(36).slice(2)}`,
+      `mf-doctor-workspace-file-test-${Date.now()}-${Math.random().toString(36).slice(2)}`,
     );
     mkdirSync(testDir, { recursive: true });
   });

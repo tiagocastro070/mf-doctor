@@ -115,12 +115,12 @@ function formatAnalyzersHelp(): string {
     "Available Analyzers:",
     ...lines,
     "",
-    'Use "mfdoc analyze --analyzers <id>,<id>" to run specific analyzers.',
+    'Use "mf-doctor analyze --analyzers <id>,<id>" to run specific analyzers.',
   ].join("\n");
 }
 
 program
-  .name("mfdoc")
+  .name("mf-doctor")
   .description("Static analyzer for Module Federation setups")
   .version("0.0.0")
   .addHelpCommand("help [command]", "Display help for a command")
@@ -139,8 +139,8 @@ program
     "--fail-on <severity>",
     "Exit with non-zero if findings at or above this severity exist (LOW, MEDIUM, HIGH)",
   )
-  .option("--no-config", "Ignore mfdoc.config.* file")
-  .option("--no-ignore", "Ignore .mfdoc-ignore.json file")
+  .option("--no-config", "Ignore mf-doctor.config.* file")
+  .option("--no-ignore", "Ignore .mf-doctor-ignore.json file")
   .option(
     "-w, --workspace <file>",
     "Path to a .code-workspace file for polyrepo discovery",

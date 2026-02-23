@@ -11,7 +11,7 @@ import {
   extractFromProject,
 } from "./webpackExtractor.js";
 
-const TEST_DIR = join(tmpdir(), "mfdoc-webpack-test-" + Date.now());
+const TEST_DIR = join(tmpdir(), "mf-doctor-webpack-test-" + Date.now());
 
 function createTestProject(files: string[]): string {
   const projectRoot = join(

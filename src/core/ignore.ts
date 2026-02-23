@@ -15,7 +15,7 @@ export type IgnoreEntry = {
 };
 
 /**
- * The structure of .mfdoc-ignore.json
+ * The structure of .mf-doctor-ignore.json
  */
 export type IgnoreFile = {
   ignoreFindings?: IgnoreEntry[];
@@ -41,7 +41,7 @@ export type FilteredFindings = {
   }>;
 };
 
-const IGNORE_FILE_NAME = ".mfdoc-ignore.json";
+const IGNORE_FILE_NAME = ".mf-doctor-ignore.json";
 
 /**
  * Loads the ignore file from a workspace.

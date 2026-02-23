@@ -12,7 +12,7 @@ describe("ignore", () => {
   beforeEach(() => {
     testDir = join(
       tmpdir(),
-      `mfdoc-ignore-test-${Date.now()}-${Math.random().toString(36).slice(2)}`,
+      `mf-doctor-ignore-test-${Date.now()}-${Math.random().toString(36).slice(2)}`,
     );
     mkdirSync(testDir, { recursive: true });
   });
@@ -32,7 +32,7 @@ describe("ignore", () => {
     });
 
     it("loads valid ignore file", () => {
-      const filePath = join(testDir, ".mfdoc-ignore.json");
+      const filePath = join(testDir, ".mf-doctor-ignore.json");
       writeFileSync(
         filePath,
         JSON.stringify({
@@ -58,7 +58,7 @@ describe("ignore", () => {
     });
 
     it("loads ignore file with minimal entry (id only)", () => {
-      const filePath = join(testDir, ".mfdoc-ignore.json");
+      const filePath = join(testDir, ".mf-doctor-ignore.json");
       writeFileSync(
         filePath,
         JSON.stringify({
@@ -73,7 +73,7 @@ describe("ignore", () => {
     });
 
     it("handles empty ignoreFindings array", () => {
-      const filePath = join(testDir, ".mfdoc-ignore.json");
+      const filePath = join(testDir, ".mf-doctor-ignore.json");
       writeFileSync(filePath, JSON.stringify({ ignoreFindings: [] }));
 
       const config = loadIgnoreFile(testDir);
@@ -83,7 +83,7 @@ describe("ignore", () => {
     });
 
     it("handles empty object", () => {
-      const filePath = join(testDir, ".mfdoc-ignore.json");
+      const filePath = join(testDir, ".mf-doctor-ignore.json");
       writeFileSync(filePath, JSON.stringify({}));
 
       const config = loadIgnoreFile(testDir);
@@ -92,21 +92,21 @@ describe("ignore", () => {
     });
 
     it("throws on invalid JSON", () => {
-      const filePath = join(testDir, ".mfdoc-ignore.json");
+      const filePath = join(testDir, ".mf-doctor-ignore.json");
       writeFileSync(filePath, "{ invalid json }");
 
       expect(() => loadIgnoreFile(testDir)).toThrow("Invalid JSON");
     });
 
     it("throws when ignoreFindings is not an array", () => {
-      const filePath = join(testDir, ".mfdoc-ignore.json");
+      const filePath = join(testDir, ".mf-doctor-ignore.json");
       writeFileSync(filePath, JSON.stringify({ ignoreFindings: "not-array" }));
 
       expect(() => loadIgnoreFile(testDir)).toThrow("expected an array");
     });
 
     it("throws when entry is missing id", () => {
-      const filePath = join(testDir, ".mfdoc-ignore.json");
+      const filePath = join(testDir, ".mf-doctor-ignore.json");
       writeFileSync(
         filePath,
         JSON.stringify({ ignoreFindings: [{ reason: "no id" }] }),
@@ -118,7 +118,7 @@ describe("ignore", () => {
     });
 
     it("throws when entry has empty id", () => {
-      const filePath = join(testDir, ".mfdoc-ignore.json");
+      const filePath = join(testDir, ".mf-doctor-ignore.json");
       writeFileSync(
         filePath,
         JSON.stringify({ ignoreFindings: [{ id: "  " }] }),
@@ -130,7 +130,7 @@ describe("ignore", () => {
     });
 
     it("throws when participants is not an array", () => {
-      const filePath = join(testDir, ".mfdoc-ignore.json");
+      const filePath = join(testDir, ".mf-doctor-ignore.json");
       writeFileSync(
         filePath,
         JSON.stringify({
@@ -144,7 +144,7 @@ describe("ignore", () => {
     });
 
     it("throws when participants contains non-strings", () => {
-      const filePath = join(testDir, ".mfdoc-ignore.json");
+      const filePath = join(testDir, ".mf-doctor-ignore.json");
       writeFileSync(
         filePath,
         JSON.stringify({
