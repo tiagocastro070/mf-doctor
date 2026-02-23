@@ -25,11 +25,11 @@
     "husky": "^9.1.7",
     "semantic-release": "^25.0.3",
     "tsx": "^4.21.0",
-    "typescript": "^5.9.3",
     "vitest": "^4.0.16"
   },
   "dependencies": {
     "@inquirer/prompts": "^7.3.2",
+    "typescript": "^5.9.3",
     "commander": "^14.0.2",
     "glob": "^13.0.0",
     "picocolors": "^1.1.1",
