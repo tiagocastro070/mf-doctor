@@ -199,9 +199,11 @@ program
 
       const allAnalyzerIds = analyzers.map((a) => a.id);
       let analyzerIds: string[] | undefined;
+      let analyzerIdsExplicit = false;
 
       if (options.analyzers) {
         analyzerIds = options.analyzers.split(",").map((id) => id.trim());
+        analyzerIdsExplicit = true;
       } else {
         const enabledIds = getEnabledAnalyzerIds(config, allAnalyzerIds);
         if (enabledIds.length < allAnalyzerIds.length) {
@@ -232,6 +234,8 @@ program
         pull: options.pull,
         onPullProgress: handlePullProgress,
         hosts,
+        checks: config.checks,
+        analyzerIdsExplicit,
       });
 
       const allFindings = rawResult.results.flatMap((r) => r.findings);

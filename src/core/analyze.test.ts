@@ -146,6 +146,42 @@ describe("analyze", () => {
     expect(orphanExposeResult!.findings).toHaveLength(0);
   });
 
+  it("skips orphan-expose when host has runtime remotes (avoids false positives)", async () => {
+    const result = await analyze(EXAMPLE_WORKSPACE, {
+      hosts: ["@rsbuild-basic/remote-a"],
+    });
+
+    const orphanExposeResult = result.results.find(
+      (r) => r.analyzerId === "orphan-expose",
+    );
+    expect(orphanExposeResult).toBeUndefined();
+  });
+
+  it("runs orphan-expose when allowWithRuntimeRemotes is true despite runtime remotes", async () => {
+    const result = await analyze(EXAMPLE_WORKSPACE, {
+      hosts: ["@rsbuild-basic/remote-a"],
+      checks: { "orphan-expose": { allowWithRuntimeRemotes: true } },
+    });
+
+    const orphanExposeResult = result.results.find(
+      (r) => r.analyzerId === "orphan-expose",
+    );
+    expect(orphanExposeResult).toBeDefined();
+  });
+
+  it("runs orphan-expose when explicitly requested via analyzerIds despite runtime remotes", async () => {
+    const result = await analyze(EXAMPLE_WORKSPACE, {
+      hosts: ["@rsbuild-basic/remote-a"],
+      analyzerIds: ["orphan-expose"],
+      analyzerIdsExplicit: true,
+    });
+
+    const orphanExposeResult = result.results.find(
+      (r) => r.analyzerId === "orphan-expose",
+    );
+    expect(orphanExposeResult).toBeDefined();
+  });
+
   it("detects circular dependency in example workspace", async () => {
     const result = await analyze(EXAMPLE_WORKSPACE);
 

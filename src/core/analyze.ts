@@ -10,6 +10,7 @@ import { getExtractor } from "./extractors/index.js";
 import { buildProjectGraph, applyHostOverrides } from "./projectGraph.js";
 import { getResolvedVersions } from "./lockfile/index.js";
 import { analyzers } from "./analyzers/index.js";
+import type { CheckConfig } from "./config.js";
 import type {
   FederationParticipant,
   ProjectGraph,
@@ -46,6 +47,10 @@ export type AnalyzeOptions = {
   onPullProgress?: PullProgressCallback;
   /** Participant names to explicitly mark as hosts (for runtime-loaded remotes). */
   hosts?: string[];
+  /** Per-analyzer config (e.g. from mf-doctor.config). */
+  checks?: Record<string, CheckConfig>;
+  /** True when analyzerIds were explicitly provided via CLI (e.g. --analyzers). */
+  analyzerIdsExplicit?: boolean;
 };
 
 /**
@@ -180,19 +185,37 @@ function enrichResolvedVersions(
   });
 }
 
+const ORPHAN_EXPOSE_ID = "orphan-expose";
+
 /**
  * Runs all analyzers on the project graph and collects results.
  */
 function runAnalyzers(
   graph: ProjectGraph,
-  analyzerIds?: string[],
+  analyzerIds: string[] | undefined,
+  runOptions: {
+    checks?: Record<string, CheckConfig>;
+    analyzerIdsExplicit?: boolean;
+  },
 ): AnalyzeResult[] {
   const results: AnalyzeResult[] = [];
 
-  const analyzersToRun =
+  const hasRuntimeRemotes = graph.participants.some(
+    (p) => p.runtimeRemotes === true,
+  );
+
+  let analyzersToRun =
     analyzerIds && analyzerIds.length > 0
       ? analyzers.filter((a) => analyzerIds.includes(a.id))
       : analyzers;
+
+  if (
+    hasRuntimeRemotes &&
+    !runOptions.analyzerIdsExplicit &&
+    !runOptions.checks?.[ORPHAN_EXPOSE_ID]?.allowWithRuntimeRemotes
+  ) {
+    analyzersToRun = analyzersToRun.filter((a) => a.id !== ORPHAN_EXPOSE_ID);
+  }
 
   for (const analyzer of analyzersToRun) {
     const startTime = performance.now();
@@ -288,7 +311,10 @@ export async function analyze(
 
   const graph = buildProjectGraph(effectiveWorkspaceRoot, participantsEnriched);
 
-  const results = runAnalyzers(graph, options.analyzerIds);
+  const results = runAnalyzers(graph, options.analyzerIds, {
+    checks: options.checks,
+    analyzerIdsExplicit: options.analyzerIdsExplicit,
+  });
 
   const { totalFindings, findingsBySeverity } = computeSummary(results);
 

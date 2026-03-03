@@ -117,6 +117,32 @@ describe("config", () => {
       await expect(loadConfig(testDir)).rejects.toThrow("Invalid 'checks'");
     });
 
+    it("throws on invalid allowWithRuntimeRemotes (non-boolean)", async () => {
+      const configPath = join(testDir, "mf-doctor.config.js");
+      writeFileSync(
+        configPath,
+        `export default { checks: { "orphan-expose": { allowWithRuntimeRemotes: "yes" } } };`,
+      );
+
+      await expect(loadConfig(testDir)).rejects.toThrow(
+        "Invalid 'checks.orphan-expose.allowWithRuntimeRemotes'",
+      );
+    });
+
+    it("loads allowWithRuntimeRemotes for orphan-expose", async () => {
+      const configPath = join(testDir, "mf-doctor.config.js");
+      writeFileSync(
+        configPath,
+        `export default { checks: { "orphan-expose": { allowWithRuntimeRemotes: true } } };`,
+      );
+
+      const config = await loadConfig(testDir);
+
+      expect(config.checks["orphan-expose"]).toEqual({
+        allowWithRuntimeRemotes: true,
+      });
+    });
+
     it("throws on invalid ignore type", async () => {
       const configPath = join(testDir, "mf-doctor.config.js");
       writeFileSync(configPath, `export default { ignore: "not-an-array" };`);

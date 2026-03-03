@@ -8,6 +8,8 @@ import type { FindingSeverity } from "./types.js";
  */
 export type CheckConfig = {
   enabled?: boolean;
+  /** For orphan-expose: run even when hosts load remotes at runtime (default: false) */
+  allowWithRuntimeRemotes?: boolean;
 };
 
 /**
@@ -98,6 +100,25 @@ function validateConfig(config: unknown, configPath: string): MfDoctorConfig {
 
   if (cfg.checks !== undefined && typeof cfg.checks !== "object") {
     throw new Error(`Invalid 'checks' in ${configPath}: expected an object`);
+  }
+
+  if (cfg.checks !== undefined && cfg.checks !== null) {
+    const checks = cfg.checks as Record<string, unknown>;
+    for (const [checkId, checkCfg] of Object.entries(checks)) {
+      if (checkCfg !== undefined && checkCfg !== null && typeof checkCfg === "object") {
+        const c = checkCfg as Record<string, unknown>;
+        if (c.enabled !== undefined && typeof c.enabled !== "boolean") {
+          throw new Error(
+            `Invalid 'checks.${checkId}.enabled' in ${configPath}: expected boolean`,
+          );
+        }
+        if (c.allowWithRuntimeRemotes !== undefined && typeof c.allowWithRuntimeRemotes !== "boolean") {
+          throw new Error(
+            `Invalid 'checks.${checkId}.allowWithRuntimeRemotes' in ${configPath}: expected boolean`,
+          );
+        }
+      }
+    }
   }
 
   if (cfg.severityThreshold !== undefined) {

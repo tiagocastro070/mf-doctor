@@ -89,6 +89,7 @@ export default {
   checks: {
     "react-version-drift": { enabled: true },
     "shared-config-mismatch": { enabled: true },
+    "orphan-expose": { allowWithRuntimeRemotes: true }, // run even when hosts load remotes at runtime
   },
   ignore: ["apps/legacy/**"],
   hosts: ["shell-ui"],
@@ -150,7 +151,8 @@ CLI and config hosts are merged.
 
 - In output: participant is labeled `HOST (runtime remotes)`; dependency graph shows “remotes loaded at runtime (edges unknown)”.
 - In JSON: participant has `hostOverride: true` and `runtimeRemotes: true`.
-- Analyzers that depend on host–remote edges may be less accurate for these setups.
+- **Orphan-expose** is auto-disabled when any host loads remotes at runtime (avoids false positives). Override via `checks["orphan-expose"].allowWithRuntimeRemotes: true` or by explicitly requesting it: `--analyzers orphan-expose`.
+- Other analyzers that depend on host–remote edges may be less accurate for these setups.
 
 ---
 
