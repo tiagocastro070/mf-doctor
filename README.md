@@ -12,7 +12,7 @@ npx mf-doctor analyze .
 
 Analyze another path: `npx mf-doctor analyze path/to/workspace`
 
-**Requirements:** Node.js 18+
+**Requirements:** Node.js 20+
 
 ---
 
