@@ -2,12 +2,19 @@
   "name": "mf-doctor",
   "version": "0.1.0",
   "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
   "bin": {
     "mf-doctor": "./dist/cli/index.js"
   },
-  "files": ["dist", "README.md", "LICENSE"],
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
   "scripts": {
-    "build": "tsc",
+    "build": "tsc -p tsconfig.build.json",
     "graph:image": "node scripts/graph-to-image.mjs",
     "dev": "tsc --watch",
     "typecheck": "tsc --noEmit",
@@ -20,6 +27,7 @@
   "devDependencies": {
     "@commitlint/cli": "^20.4.2",
     "@commitlint/config-conventional": "^20.4.2",
+    "@semantic-release/git": "^11.0.1",
     "@types/node": "^25.0.6",
     "@types/semver": "^7.5.8",
     "husky": "^9.1.7",
@@ -29,11 +37,11 @@
   },
   "dependencies": {
     "@inquirer/prompts": "^7.3.2",
-    "typescript": "^5.9.3",
     "commander": "^14.0.2",
     "glob": "^13.0.0",
     "picocolors": "^1.1.1",
     "semver": "^7.6.0",
+    "typescript": "^5.9.3",
     "yaml": "^2.8.2"
   },
   "repository": {

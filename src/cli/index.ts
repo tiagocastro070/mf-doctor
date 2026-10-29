@@ -3,6 +3,7 @@
 import { Command } from "commander";
 import { resolve, basename, dirname } from "node:path";
 import { writeFileSync, mkdirSync, existsSync } from "node:fs";
+import { createRequire } from "node:module";
 import pc from "picocolors";
 import { analyze, getProjectGraph } from "../core/analyze.js";
 import type { PullResult } from "../core/analyze.js";
@@ -24,6 +25,11 @@ import type {
 } from "../core/types.js";
 
 const program = new Command();
+
+const nodeRequire = createRequire(import.meta.url);
+const { version: cliVersion } = nodeRequire(
+  "../../package.json",
+) as { version: string };
 
 /**
  * Severity levels in order from lowest to highest.
@@ -122,7 +128,7 @@ function formatAnalyzersHelp(): string {
 program
   .name("mf-doctor")
   .description("Static analyzer for Module Federation setups")
-  .version("0.0.0")
+  .version(cliVersion)
   .addHelpCommand("help [command]", "Display help for a command")
   .addHelpText("after", formatAnalyzersHelp);
 
