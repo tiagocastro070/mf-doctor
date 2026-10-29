@@ -37,6 +37,34 @@ describe("config", () => {
       });
     });
 
+    it("accepts a per-check severity override", async () => {
+      writeFileSync(
+        join(testDir, "mf-doctor.config.js"),
+        `export default {
+          checks: { "circular-dependency": { severity: "LOW" } }
+        };`,
+      );
+
+      const config = await loadConfig(testDir);
+
+      expect(config.checks["circular-dependency"]).toEqual({
+        severity: "LOW",
+      });
+    });
+
+    it("rejects an invalid per-check severity", async () => {
+      writeFileSync(
+        join(testDir, "mf-doctor.config.js"),
+        `export default {
+          checks: { "circular-dependency": { severity: "CRITICAL" } }
+        };`,
+      );
+
+      await expect(loadConfig(testDir)).rejects.toThrow(
+        /checks\.circular-dependency\.severity/,
+      );
+    });
+
     it("loads mf-doctor.config.js", async () => {
       const configPath = join(testDir, "mf-doctor.config.js");
       writeFileSync(

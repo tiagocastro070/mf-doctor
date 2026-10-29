@@ -300,18 +300,14 @@ export async function runInteractiveFix(
 /**
  * Checks if interactive mode should be enabled.
  *
- * @param isInteractiveFlag - Value of --no-interactive flag (false = disabled)
+ * Interactive fixes mutate the workspace (they run the package manager), so
+ * they are opt-in: the caller must have passed --fix. JSON output and
+ * non-TTY runs never prompt.
+ *
  * @param format - Output format (json disables interactive)
  * @returns true if interactive mode should run
  */
-export function shouldRunInteractive(
-  isInteractiveFlag: boolean,
-  format: string,
-): boolean {
-  if (!isInteractiveFlag) {
-    return false;
-  }
-
+export function shouldRunInteractive(format: string): boolean {
   if (format === "json") {
     return false;
   }

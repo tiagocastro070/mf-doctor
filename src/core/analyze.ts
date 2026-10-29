@@ -222,8 +222,17 @@ function runAnalyzers(
     const result = analyzer.analyze(graph);
     const durationMs = performance.now() - startTime;
 
+    const severityOverride = runOptions.checks?.[analyzer.id]?.severity;
+    const findings = severityOverride
+      ? result.findings.map((finding) => ({
+          ...finding,
+          severity: severityOverride,
+        }))
+      : result.findings;
+
     results.push({
       ...result,
+      findings,
       durationMs,
     });
   }

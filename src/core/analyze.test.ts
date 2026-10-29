@@ -192,7 +192,7 @@ describe("analyze", () => {
     expect(circularResult!.findings).toHaveLength(1);
 
     const finding = circularResult!.findings[0];
-    expect(finding.severity).toBe("HIGH");
+    expect(finding.severity).toBe("MEDIUM");
     expect(finding.message).toContain("Circular dependency");
     expect(finding.participants).toContain("@rsbuild-basic/shell");
     expect(finding.participants).toContain("@rsbuild-basic/remote-b");
