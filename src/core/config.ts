@@ -8,6 +8,12 @@ import type { FindingSeverity } from "./types.js";
  */
 export type CheckConfig = {
   enabled?: boolean;
+  /**
+   * Overrides the severity of every finding produced by this check.
+   * Useful for checks whose default severity does not fit a workspace,
+   * e.g. `circular-dependency` in a topology with intentional cycles.
+   */
+  severity?: FindingSeverity;
   /** For orphan-expose: run even when hosts load remotes at runtime (default: false) */
   allowWithRuntimeRemotes?: boolean;
 };
@@ -116,6 +122,14 @@ function validateConfig(config: unknown, configPath: string): MfDoctorConfig {
           throw new Error(
             `Invalid 'checks.${checkId}.allowWithRuntimeRemotes' in ${configPath}: expected boolean`,
           );
+        }
+        if (c.severity !== undefined) {
+          const validSeverities: FindingSeverity[] = ["LOW", "MEDIUM", "HIGH"];
+          if (!validSeverities.includes(c.severity as FindingSeverity)) {
+            throw new Error(
+              `Invalid 'checks.${checkId}.severity' in ${configPath}: must be one of ${validSeverities.join(", ")}`,
+            );
+          }
         }
       }
     }

@@ -103,6 +103,7 @@ type AnalyzeOptions = {
   workspace?: string;
   pull?: boolean;
   host?: string[];
+  fix?: boolean;
   interactive: boolean;
 };
 
@@ -158,7 +159,14 @@ program
     (value: string, previous: string[]) => previous.concat([value]),
     [] as string[],
   )
-  .option("--no-interactive", "Disable interactive fix prompts (useful for CI)")
+  .option(
+    "--fix",
+    "Interactively apply suggested fixes (runs the package manager after confirmation)",
+  )
+  .option(
+    "--no-interactive",
+    "Accepted for backwards compatibility; fixes are opt-in via --fix",
+  )
   .action(async (path: string, options: AnalyzeOptions) => {
     try {
       const workspaceRoot = resolve(path);
@@ -280,10 +288,19 @@ program
         console.log(formatPretty(result));
 
         if (
-          shouldRunInteractive(options.interactive, format) &&
+          options.fix === true &&
+          options.interactive !== false &&
+          shouldRunInteractive(format) &&
           hasFixableIssues(result)
         ) {
           await runInteractiveFix(result);
+        } else if (format === "pretty" && hasFixableIssues(result)) {
+          console.log(
+            pc.dim(
+              "  Run with --fix to apply these suggestions interactively.",
+            ),
+          );
+          console.log("");
         }
       }
 

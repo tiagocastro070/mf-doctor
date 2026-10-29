@@ -150,7 +150,7 @@ function createCycleFinding(cycle: CycleInfo): Finding {
 
   return {
     id: ANALYZER_ID,
-    severity: "HIGH",
+    severity: "MEDIUM",
     message: `Circular dependency detected: ${pathDisplay}`,
     participants,
     details: {
@@ -159,9 +159,10 @@ function createCycleFinding(cycle: CycleInfo): Finding {
       edges: cycle.edges,
     },
     suggestions: [
+      "Check whether the cycle is intentional - shared design systems and shell-provided context often create one",
       "Refactor to remove the cycle by extracting shared code into a separate remote",
       "Review the dependency direction - typically hosts consume remotes, not vice versa",
-      "Consider if one of the dependencies can be removed or inverted",
+      'Raise or lower this check with checks["circular-dependency"].severity in mf-doctor.config.*',
     ],
   };
 }

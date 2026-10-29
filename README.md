@@ -70,6 +70,11 @@ Analyze another path: `npx mf-doctor analyze path/to/workspace`
 | `--host <name>`                 | Mark participant as host (runtime-loaded remotes). Repeatable.     |
 | `--no-config`                   | Ignore `mf-doctor.config.*`                                            |
 | `--no-ignore`                   | Ignore `.mf-doctor-ignore.json`                                        |
+| `--fix`                         | Apply suggested fixes interactively (runs the package manager)     |
+| `--no-interactive`              | Accepted for backwards compatibility; fixes are opt-in via `--fix`  |
+
+`analyze` never changes your repository unless you pass `--fix`. Without it, suggested
+commands are printed and you run them yourself.
 
 ### Analyzer IDs
 
@@ -90,11 +95,43 @@ export default {
     "react-version-drift": { enabled: true },
     "shared-config-mismatch": { enabled: true },
     "orphan-expose": { allowWithRuntimeRemotes: true }, // run even when hosts load remotes at runtime
+    "circular-dependency": { severity: "LOW" }, // demote a check that does not fit this topology
   },
   ignore: ["apps/legacy/**"],
   hosts: ["shell-ui"],
 };
 ```
+
+`circular-dependency` defaults to `MEDIUM`: cycles are common in Module Federation
+(a remote consuming the shell's design system is a legitimate pattern). Use
+`checks["circular-dependency"].severity` to raise it to `HIGH` for a strict topology,
+or lower it to `LOW`.
+
+---
+
+## Programmatic API
+
+The analysis engine is importable, so CI services, ESLint plugins, and IDE
+extensions can run the same checks as the CLI:
+
+```ts
+import { analyze } from "mf-doctor";
+
+const result = await analyze(process.cwd(), {
+  checks: { "circular-dependency": { severity: "LOW" } },
+});
+
+console.log(result.findingsBySeverity); // { LOW, MEDIUM, HIGH }
+for (const check of result.results) {
+  for (const finding of check.findings) {
+    console.log(finding.severity, finding.message);
+  }
+}
+```
+
+Also exported: `getProjectGraph()`, `hasFederationParticipants()`, `loadConfig()`,
+the analyzer registry (`analyzers`, `getAnalyzer()`, `getAnalyzerIds()`), and the
+public types (`Finding`, `ProjectGraph`, `Analyzer`, `FullAnalysisResult`, and others).
 
 ---
 

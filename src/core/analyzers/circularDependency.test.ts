@@ -116,7 +116,7 @@ describe("circularDependencyAnalyzer", () => {
       const result = circularDependencyAnalyzer.analyze(graph);
 
       expect(result.findings).toHaveLength(1);
-      expect(result.findings[0].severity).toBe("HIGH");
+      expect(result.findings[0].severity).toBe("MEDIUM");
       expect(result.findings[0].message).toContain("Circular dependency");
       expect(result.findings[0].participants).toContain("a");
       expect(result.findings[0].participants).toContain("b");
